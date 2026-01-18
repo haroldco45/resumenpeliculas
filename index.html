@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CineVibras | Buscador Global ✨</title>
+    <title>CineVibras ✨</title>
     <style>
         :root {
             --rojo: #e50914;
@@ -123,8 +123,8 @@
     </div>
 
     <script>
-        // CLAVE DE ACCESO REVISADA
-        const API_KEY = '8db8140445d07010468e470830a3835c'; 
+        // NUEVA API KEY DE RESPALDO
+        const API_KEY = 'fca06282855f2425026210f7457a41ca'; 
         const listaPeliculas = document.getElementById('lista-peliculas');
         const buscador = document.getElementById('buscador');
         const mensaje = document.getElementById('mensaje');
@@ -143,7 +143,7 @@
         // RENDERIZAR RESULTADOS
         function renderizar(peliculas) {
             listaPeliculas.innerHTML = '';
-            if (peliculas.length === 0) {
+            if (!peliculas || peliculas.length === 0) {
                 mensaje.innerText = "No se encontraron resultados.";
                 return;
             }
@@ -157,7 +157,7 @@
                         <h3>${p.title}</h3>
                         <div class="ficha-tecnica">
                             <div><span class="label">Estreno:</span> ${p.release_date || 'N/A'}</div>
-                            <div><span class="label">Puntaje:</span> ⭐ ${p.vote_average}</div>
+                            <div><span class="label">Puntaje:</span> ⭐ ${p.vote_average || '0'}</div>
                         </div>
                         <p class="argumento">${p.overview || 'Sin resumen disponible.'}</p>
                         <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(p.title)}+trailer" target="_blank" class="btn-trailer">Ver Trailer</a>
@@ -167,7 +167,7 @@
             });
         }
 
-        // FUNCIÓN DE BÚSQUEDA CORREGIDA PARA MÓVIL
+        // FUNCIÓN DE BÚSQUEDA
         async function realizarBusqueda(query = '') {
             let url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=es-MX`;
             
@@ -179,25 +179,30 @@
             }
 
             try {
-                const res = await fetch(url);
-                const data = await res.json();
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Error en API');
+                const data = await response.json();
                 renderizar(data.results);
             } catch (e) {
-                mensaje.innerText = "Error de conexión. Intenta de nuevo.";
+                mensaje.innerText = "Modo Offline: Mostrando destacadas guardadas.";
+                // Respaldos manuales si la API falla
+                renderizar([
+                    {title: 'Gladiador II', poster_path: '/969USjs3nSBv9LdzS1UrS3p3m95.jpg', release_date: '2024-11-15', vote_average: '7.5', overview: 'Lucio entra al Coliseo para luchar contra los tiranos que conquistaron su hogar.'},
+                    {title: 'Moana 2', poster_path: '/sh779bsXkymkaSETIIbrZ36S7G0.jpg', release_date: '2024-11-27', vote_average: '8.0', overview: 'Moana viaja a los lejanos mares de Oceanía tras recibir un llamado de sus ancestros.'}
+                ]);
             }
         }
 
-        // DETECTAR ESCRITURA (OPTIMIZADO PARA TECLADOS MÓVILES)
+        // EVENTO DE BUSCADOR
         buscador.addEventListener('input', (e) => {
             const query = e.target.value;
-            // Esperamos un momento para no saturar la red mientras escribes
             clearTimeout(window.searchTimer);
             window.searchTimer = setTimeout(() => {
                 realizarBusqueda(query);
-            }, 600);
+            }, 700);
         });
 
-        // CARGA INICIAL
+        // INICIO
         window.onload = () => realizarBusqueda();
     </script>
 </body>
