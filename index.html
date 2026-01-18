@@ -1,9 +1,9 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineVibras | Resúmenes Premium ✨</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CineVibras | Buscador Global ✨</title>
     <style>
         :root {
             --rojo: #e50914;
@@ -15,65 +15,57 @@
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, system-ui, sans-serif;
             background-color: var(--negro);
             color: var(--texto);
             margin: 0;
-            padding-top: 110px; /* Espacio para el header fijo */
+            padding-top: 110px;
         }
 
-        /* HEADER MÓVIL OPTIMIZADO */
         header {
-            background-color: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.95);
             padding: 10px 5%;
             position: fixed;
-            top: 0;
-            width: 90%;
+            top: 0; left: 0; right: 0;
             display: flex;
-            flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
             border-bottom: 3px solid var(--rojo);
         }
 
         .logo { font-size: 1.2rem; font-weight: bold; }
         .logo span { color: var(--dorado); }
 
-        .reloj-col { text-align: right; }
+        .reloj-col { text-align: right; line-height: 1.2; }
         #hora { font-size: 1.1rem; font-weight: bold; color: var(--dorado); display: block; }
         #fecha { font-size: 0.7rem; color: var(--gris); }
 
-        /* BUSCADOR CORREGIDO PARA CELULAR */
         .search-area {
-            padding: 20px 5%;
+            padding: 15px 5%;
             background: var(--negro);
             position: sticky;
-            top: 75px;
-            z-index: 900;
+            top: 73px;
+            z-index: 1500;
         }
 
         #buscador {
             width: 100%;
             box-sizing: border-box;
-            padding: 15px 20px;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 12px;
             border: 2px solid #333;
             background: #1a1a1a;
             color: white;
             font-size: 1rem;
             outline: none;
-            -webkit-appearance: none; /* Quita estilos por defecto en iOS */
         }
 
-        #buscador:focus { border-color: var(--rojo); }
-
-        /* GRILLA Y TARJETAS */
         .contenedor { padding: 10px 5% 50px 5%; }
         
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
         }
 
@@ -82,29 +74,22 @@
             border-radius: 15px;
             overflow: hidden;
             border: 1px solid #252525;
-            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease;
         }
 
-        .pelicula-card img { width: 100%; height: auto; display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .pelicula-card img { width: 100%; height: 400px; object-fit: cover; background: #222; }
         
-        .info { padding: 15px; }
-        .info h3 { margin: 0 0 10px 0; color: var(--dorado); font-size: 1.3rem; }
+        .info { padding: 15px; flex-grow: 1; }
+        .info h3 { margin: 0 0 10px 0; color: var(--dorado); font-size: 1.2rem; }
         
-        .ficha-tecnica { font-size: 0.8rem; margin-bottom: 12px; line-height: 1.4; }
+        .ficha-tecnica { font-size: 0.8rem; margin-bottom: 12px; color: var(--gris); }
         .label { color: var(--rojo); font-weight: bold; }
 
-        .resena-breve { 
-            font-style: italic; 
-            color: #eee; 
-            background: #252525; 
-            padding: 10px; 
-            border-radius: 8px; 
-            margin-bottom: 12px;
-            font-size: 0.85rem;
-            border-left: 3px solid var(--dorado);
-        }
-
-        .argumento { font-size: 0.85rem; color: var(--gris); line-height: 1.5; }
+        .argumento { font-size: 0.85rem; color: #ddd; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 
         .btn-trailer {
             display: block;
@@ -112,14 +97,13 @@
             background: var(--rojo);
             color: white;
             text-decoration: none;
-            padding: 10px;
+            padding: 12px;
             margin-top: 15px;
-            border-radius: 5px;
+            border-radius: 8px;
             font-weight: bold;
-            font-size: 0.9rem;
         }
 
-        footer { text-align: center; padding: 30px; color: #444; font-size: 0.7rem; }
+        .status-msg { text-align: center; padding: 20px; color: var(--dorado); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -133,78 +117,86 @@
     </header>
 
     <div class="search-area">
-        <input type="text" id="buscador" placeholder="🔍 Buscar película, actor o director..." oninput="filtrar()">
+        <input type="text" id="buscador" placeholder="🔍 Escribe para buscar en la red..." autocomplete="off">
     </div>
 
     <div class="contenedor">
-        <div class="grid" id="cartelera">
-            
-            <div class="pelicula-card">
-                <img src="https://image.tmdb.org/t/p/w500/969USjs3nSBv9LdzS1UrS3p3m95.jpg" alt="Gladiador 2">
-                <div class="info">
-                    <h3>Gladiador II</h3>
-                    <div class="resena-breve">"Una secuela visualmente imponente que honra el legado de la original."</div>
-                    <div class="ficha-tecnica">
-                        <div><span class="label">Género:</span> Acción, Épico</div>
-                        <div><span class="label">Director:</span> Ridley Scott</div>
-                        <div><span class="label">Protagonistas:</span> Paul Mescal, Pedro Pascal</div>
-                    </div>
-                    <p class="argumento"><strong>¿De qué trata?</strong> Lucio entra al Coliseo para luchar contra los tiranos que conquistaron su hogar, buscando devolver la gloria a Roma.</p>
-                    <a href="https://www.youtube.com/results?search_query=gladiador+2+trailer+español" target="_blank" class="btn-trailer">📺 Ver Trailer</a>
-                </div>
+        <div id="mensaje" class="status-msg">Películas Destacadas</div>
+        <div class="grid" id="lista-peliculas">
             </div>
-
-            <div class="pelicula-card">
-                <img src="https://image.tmdb.org/t/p/w500/sh779bsXkymkaSETIIbrZ36S7G0.jpg" alt="Moana 2">
-                <div class="info">
-                    <h3>Moana 2</h3>
-                    <div class="resena-breve">"Una aventura mágica que expande el universo de Oceanía."</div>
-                    <div class="ficha-tecnica">
-                        <div><span class="label">Género:</span> Animación, Aventura</div>
-                        <div><span class="label">Director:</span> David G. Derrick Jr.</div>
-                        <div><span class="label">Protagonistas:</span> Auli'i Cravalho, Dwayne Johnson</div>
-                    </div>
-                    <p class="argumento"><strong>¿De qué trata?</strong> Moana viaja a mares lejanos para romper una maldición ancestral y reconectar a su pueblo.</p>
-                    <a href="https://www.youtube.com/results?search_query=moana+2+trailer+español" target="_blank" class="btn-trailer">📺 Ver Trailer</a>
-                </div>
-            </div>
-
-        </div>
     </div>
 
-    <footer>
-        &copy; 2026 CineVibras - Informativo de Películas
-    </footer>
-
     <script>
-        // ACTUALIZACIÓN DE HORA COLOMBIA
+        const API_KEY = '8db8140445d07010468e470830a3835c'; // Clave pública de demostración
+        const listaPeliculas = document.getElementById('lista-peliculas');
+        const buscador = document.getElementById('buscador');
+        const mensaje = document.getElementById('mensaje');
+
+        // 1. Reloj de Colombia
         function actualizarReloj() {
             const ahora = new Date();
             const h = ahora.toLocaleTimeString('es-CO', { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
             const f = ahora.toLocaleDateString('es-CO', { timeZone: 'America/Bogota', weekday: 'short', day: 'numeric', month: 'short' });
-            
             document.getElementById('hora').innerText = h;
             document.getElementById('fecha').innerText = f;
         }
         setInterval(actualizarReloj, 1000);
         actualizarReloj();
 
-        // FILTRO PARA MÓVILES (USANDO 'INPUT')
-        function filtrar() {
-            const input = document.getElementById('buscador');
-            const filtro = input.value.toLowerCase();
-            const tarjetas = document.getElementsByClassName('pelicula-card');
+        // 2. Función para renderizar películas
+        function renderizar(peliculas) {
+            listaPeliculas.innerHTML = '';
+            peliculas.forEach(p => {
+                const poster = p.poster_path ? `https://image.tmdb.org/t/p/w500${p.poster_path}` : 'https://via.placeholder.com/500x750?text=Sin+Imagen';
+                const card = document.createElement('div');
+                card.className = 'pelicula-card';
+                card.innerHTML = `
+                    <img src="${poster}" alt="${p.title}">
+                    <div class="info">
+                        <h3>${p.title}</h3>
+                        <div class="ficha-tecnica">
+                            <div><span class="label">Estreno:</span> ${p.release_date || 'N/A'}</div>
+                            <div><span class="label">Puntaje:</span> ⭐ ${p.vote_average}</div>
+                        </div>
+                        <p class="argumento">${p.overview || 'No hay resumen disponible para esta película.'}</p>
+                        <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(p.title)}+trailer" target="_blank" class="btn-trailer">Ver Trailer</a>
+                    </div>
+                `;
+                listaPeliculas.appendChild(card);
+            });
+        }
 
-            for (let i = 0; i < tarjetas.length; i++) {
-                const contenido = tarjetas[i].innerText.toLowerCase();
-                if (contenido.includes(filtro)) {
-                    tarjetas[i].style.display = "block";
-                } else {
-                    tarjetas[i].style.display = "none";
-                }
+        // 3. Buscar en la red (API)
+        async function buscarEnRed(query = '') {
+            let url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=es-MX`;
+            
+            if (query.length > 2) {
+                mensaje.innerText = `Resultados para: "${query}"`;
+                url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=es-MX&query=${encodeURIComponent(query)}`;
+            } else {
+                mensaje.innerText = "Películas Destacadas";
+            }
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                renderizar(data.results);
+            } catch (e) {
+                console.error("Error buscando:", e);
             }
         }
+
+        // 4. Escuchador del buscador (Optimizado para móvil)
+        let timeout = null;
+        buscador.addEventListener('input', () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                buscarEnRed(buscador.value);
+            }, 500); // Espera 500ms tras dejar de escribir para no saturar el celular
+        });
+
+        // Carga inicial
+        buscarEnRed();
     </script>
 </body>
 </html>
-             
