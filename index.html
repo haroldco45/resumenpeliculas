@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineVibras | Resúmenes Semanales ✨</title>
+    <style>
+        :root {
+            --rojo: #e50914;
+            --fondo: #0a0a0a;
+            --tarjeta: #1a1a1a;
+            --texto: #ffffff;
+            --dorado: #f1c40f;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--fondo);
+            color: var(--texto);
+            margin: 0;
+            padding-top: 110px;
+        }
+
+        /* HEADER */
+        header {
+            background-color: rgba(0, 0, 0, 0.95);
+            padding: 10px 5%;
+            position: fixed;
+            top: 0;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 3px solid var(--rojo);
+        }
+
+        .logo { font-size: 1.5rem; font-weight: bold; }
+        .logo span { color: var(--dorado); }
+
+        .reloj-col {
+            text-align: right;
+            border-left: 2px solid var(--rojo);
+            padding-left: 15px;
+        }
+
+        #hora { font-size: 1.3rem; font-weight: bold; color: var(--dorado); display: block; }
+        #fecha { font-size: 0.8rem; color: #aaa; text-transform: capitalize; }
+
+        /* BUSCADOR */
+        .search-container {
+            padding: 20px 5%;
+            text-align: center;
+        }
+
+        #buscador {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            border-radius: 30px;
+            border: 2px solid #333;
+            background: #222;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        #buscador:focus { border-color: var(--rojo); box-shadow: 0 0 10px var(--rojo); }
+
+        /* GRILLA */
+        .contenedor { padding: 0 5% 50px 5%; max-width: 1400px; margin: auto; }
+        
+        .seccion-titulo { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .pelicula-card {
+            background: var(--tarjeta);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #222;
+            transition: 0.4s;
+            display: block; /* Para el filtro */
+        }
+
+        .pelicula-card:hover { transform: translateY(-10px); border-color: var(--dorado); }
+        
+        .pelicula-card img { width: 100%; height: 380px; object-fit: cover; }
+
+        .info { padding: 15px; }
+        .info h3 { margin: 0 0 10px 0; color: var(--dorado); font-size: 1.1rem; }
+        .info p { font-size: 0.85rem; color: #ccc; line-height: 1.4; height: 60px; overflow: hidden; }
+
+        .vibras-badge {
+            background: var(--rojo);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">✨ Vibras <span>Positivas</span></div>
+        <div class="reloj-col">
+            <span id="fecha">Cargando fecha...</span>
+            <span id="hora">00:00:00</span>
+            <small style="color:var(--rojo)">BOGOTÁ, COLOMBIA</small>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="buscador" placeholder="🔍 Buscar película por título..." onkeyup="filtrarPeliculas()">
+    </div>
+
+    <div class="contenedor">
+        <div class="seccion-titulo">
+            <h2>Estrenos de la Semana</h2>
+            <span style="color: var(--dorado)">Actualizado: Enero 2026</span>
+        </div>
+
+        <div class="grid" id="lista-peliculas">
+            
+            <div class="pelicula-card">
+                <img src="https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLv1oYI9fs.jpg">
+                <div class="info">
+                    <span class="vibras-badge">Nuevo</span>
+                    <h3>Deadpool y Wolverine</h3>
+                    <p>Una aventura multiversal donde el mercenario bocazas debe unir fuerzas con un Logan amargado.</p>
+                </div>
+            </div>
+
+            <div class="pelicula-card">
+                <img src="https://image.tmdb.org/t/p/w500/969USjs3nSBv9LdzS1UrS3p3m95.jpg">
+                <div class="info">
+                    <span class="vibras-badge">Nuevo</span>
+                    <h3>Gladiador II</h3>
+                    <p>El regreso épico al coliseo romano bajo la dirección de Ridley Scott.</p>
+                </div>
+            </div>
+
+            <div class="pelicula-card">
+                <img src="https://image.tmdb.org/t/p/w500/sh779bsXkymkaSETIIbrZ36S7G0.jpg">
+                <div class="info">
+                    <span class="vibras-badge">Nuevo</span>
+                    <h3>Moana 2</h3>
+                    <p>Moana y Maui se reúnen para un nuevo viaje a través de los océanos prohibidos.</p>
+                </div>
+            </div>
+
+            <div class="pelicula-card">
+                <img src="https://image.tmdb.org/t/p/w500/8CD96Ssnv8mP9Y7W6v3s8oYFmvi.jpg">
+                <div class="info">
+                    <span class="vibras-badge">Popular</span>
+                    <h3>Intensa Mente 2</h3>
+                    <p>Nuevas emociones llegan a la cabeza de Riley en su etapa adolescente.</p>
+                </div>
+            </div>
+
+            <div class="pelicula-card">
+                <img src="https://image.tmdb.org/t/p/w500/78v9m78z3S2995hU0yJ44jN8R3D.jpg">
+                <div class="info">
+                    <span class="vibras-badge">Ciencia Ficción</span>
+                    <h3>Duna: Parte Dos</h3>
+                    <p>La batalla final por el planeta Arrakis y el ascenso de Paul Atreides.</p>
+                </div>
+            </div>
+
+            <div class="pelicula-card">
+                <img src="https://image.tmdb.org/t/p/w500/pB817YvXJoxPkqy9SveR72Fv99L.jpg">
+                <div class="info">
+                    <span class="vibras-badge">Musical</span>
+                    <h3>Wicked</h3>
+                    <p>La historia de cómo una joven incomprendida se convierte en la Malvada Bruja del Oeste.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // RELOJ EN TIEMPO REAL
+        function relojColombia() {
+            const ahora = new Date();
+            const h = ahora.toLocaleTimeString('es-CO', { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            const f = ahora.toLocaleDateString('es-CO', { timeZone: 'America/Bogota', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('hora').innerText = h;
+            document.getElementById('fecha').innerText = f;
+        }
+        setInterval(relojColombia, 1000);
+        relojColombia();
+
+        // BUSCADOR EN TIEMPO REAL
+        function filtrarPeliculas() {
+            let filtro = document.getElementById('buscador').value.toLowerCase();
+            let tarjetas = document.getElementsByClassName('pelicula-card');
+
+            for (let i = 0; i < tarjetas.length; i++) {
+                let titulo = tarjetas[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                if (titulo.indexOf(filtro) > -1) {
+                    tarjetas[i].style.display = "";
+                } else {
+                    tarjetas[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
