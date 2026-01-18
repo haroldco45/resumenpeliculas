@@ -76,10 +76,7 @@
             border: 1px solid #252525;
             display: flex;
             flex-direction: column;
-            animation: fadeIn 0.5s ease;
         }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .pelicula-card img { width: 100%; height: 400px; object-fit: cover; background: #222; }
         
@@ -121,18 +118,18 @@
     </div>
 
     <div class="contenedor">
-        <div id="mensaje" class="status-msg">Películas Destacadas</div>
-        <div class="grid" id="lista-peliculas">
-            </div>
+        <div id="mensaje" class="status-msg">Cargando cartelera...</div>
+        <div class="grid" id="lista-peliculas"></div>
     </div>
 
     <script>
-        const API_KEY = '8db8140445d07010468e470830a3835c'; // Clave pública de demostración
+        // CLAVE DE ACCESO REVISADA
+        const API_KEY = '8db8140445d07010468e470830a3835c'; 
         const listaPeliculas = document.getElementById('lista-peliculas');
         const buscador = document.getElementById('buscador');
         const mensaje = document.getElementById('mensaje');
 
-        // 1. Reloj de Colombia
+        // RELOJ COLOMBIA
         function actualizarReloj() {
             const ahora = new Date();
             const h = ahora.toLocaleTimeString('es-CO', { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
@@ -143,9 +140,13 @@
         setInterval(actualizarReloj, 1000);
         actualizarReloj();
 
-        // 2. Función para renderizar películas
+        // RENDERIZAR RESULTADOS
         function renderizar(peliculas) {
             listaPeliculas.innerHTML = '';
+            if (peliculas.length === 0) {
+                mensaje.innerText = "No se encontraron resultados.";
+                return;
+            }
             peliculas.forEach(p => {
                 const poster = p.poster_path ? `https://image.tmdb.org/t/p/w500${p.poster_path}` : 'https://via.placeholder.com/500x750?text=Sin+Imagen';
                 const card = document.createElement('div');
@@ -158,7 +159,7 @@
                             <div><span class="label">Estreno:</span> ${p.release_date || 'N/A'}</div>
                             <div><span class="label">Puntaje:</span> ⭐ ${p.vote_average}</div>
                         </div>
-                        <p class="argumento">${p.overview || 'No hay resumen disponible para esta película.'}</p>
+                        <p class="argumento">${p.overview || 'Sin resumen disponible.'}</p>
                         <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(p.title)}+trailer" target="_blank" class="btn-trailer">Ver Trailer</a>
                     </div>
                 `;
@@ -166,12 +167,12 @@
             });
         }
 
-        // 3. Buscar en la red (API)
-        async function buscarEnRed(query = '') {
+        // FUNCIÓN DE BÚSQUEDA CORREGIDA PARA MÓVIL
+        async function realizarBusqueda(query = '') {
             let url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=es-MX`;
             
-            if (query.length > 2) {
-                mensaje.innerText = `Resultados para: "${query}"`;
+            if (query.trim().length > 0) {
+                mensaje.innerText = `Buscando: "${query}"...`;
                 url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=es-MX&query=${encodeURIComponent(query)}`;
             } else {
                 mensaje.innerText = "Películas Destacadas";
@@ -182,21 +183,22 @@
                 const data = await res.json();
                 renderizar(data.results);
             } catch (e) {
-                console.error("Error buscando:", e);
+                mensaje.innerText = "Error de conexión. Intenta de nuevo.";
             }
         }
 
-        // 4. Escuchador del buscador (Optimizado para móvil)
-        let timeout = null;
-        buscador.addEventListener('input', () => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                buscarEnRed(buscador.value);
-            }, 500); // Espera 500ms tras dejar de escribir para no saturar el celular
+        // DETECTAR ESCRITURA (OPTIMIZADO PARA TECLADOS MÓVILES)
+        buscador.addEventListener('input', (e) => {
+            const query = e.target.value;
+            // Esperamos un momento para no saturar la red mientras escribes
+            clearTimeout(window.searchTimer);
+            window.searchTimer = setTimeout(() => {
+                realizarBusqueda(query);
+            }, 600);
         });
 
-        // Carga inicial
-        buscarEnRed();
+        // CARGA INICIAL
+        window.onload = () => realizarBusqueda();
     </script>
 </body>
 </html>
